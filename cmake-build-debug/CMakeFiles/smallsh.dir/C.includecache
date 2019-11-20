@@ -9,4 +9,12 @@
 /Users/jordanhamilton/Documents/School/CS 344/Program 3/smallsh.c
 stdio.h
 -
+stdlib.h
+-
+string.h
+-
+sys/types.h
+-
+unistd.h
+-
 
