@@ -38,10 +38,10 @@ EQUALS = =
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /nfs/stak/users/hamiltj2/FA19-CS344/Project3
+CMAKE_SOURCE_DIR = /nfs/stak/users/hamiltj2/Program3
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /nfs/stak/users/hamiltj2/FA19-CS344/Project3/cmake-build-debug---os1
+CMAKE_BINARY_DIR = /nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1
 
 # Include any dependencies generated for this target.
 include CMakeFiles/smallsh.dir/depend.make
@@ -54,17 +54,17 @@ include CMakeFiles/smallsh.dir/flags.make
 
 CMakeFiles/smallsh.dir/smallsh.c.o: CMakeFiles/smallsh.dir/flags.make
 CMakeFiles/smallsh.dir/smallsh.c.o: ../smallsh.c
-	$(CMAKE_COMMAND) -E cmake_progress_report /nfs/stak/users/hamiltj2/FA19-CS344/Project3/cmake-build-debug---os1/CMakeFiles $(CMAKE_PROGRESS_1)
+	$(CMAKE_COMMAND) -E cmake_progress_report /nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/CMakeFiles $(CMAKE_PROGRESS_1)
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Building C object CMakeFiles/smallsh.dir/smallsh.c.o"
-	/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/smallsh.dir/smallsh.c.o   -c /nfs/stak/users/hamiltj2/FA19-CS344/Project3/smallsh.c
+	/bin/gcc  $(C_DEFINES) $(C_FLAGS) -o CMakeFiles/smallsh.dir/smallsh.c.o   -c /nfs/stak/users/hamiltj2/Program3/smallsh.c
 
 CMakeFiles/smallsh.dir/smallsh.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/smallsh.dir/smallsh.c.i"
-	/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /nfs/stak/users/hamiltj2/FA19-CS344/Project3/smallsh.c > CMakeFiles/smallsh.dir/smallsh.c.i
+	/bin/gcc  $(C_DEFINES) $(C_FLAGS) -E /nfs/stak/users/hamiltj2/Program3/smallsh.c > CMakeFiles/smallsh.dir/smallsh.c.i
 
 CMakeFiles/smallsh.dir/smallsh.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/smallsh.dir/smallsh.c.s"
-	/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /nfs/stak/users/hamiltj2/FA19-CS344/Project3/smallsh.c -o CMakeFiles/smallsh.dir/smallsh.c.s
+	/bin/gcc  $(C_DEFINES) $(C_FLAGS) -S /nfs/stak/users/hamiltj2/Program3/smallsh.c -o CMakeFiles/smallsh.dir/smallsh.c.s
 
 CMakeFiles/smallsh.dir/smallsh.c.o.requires:
 .PHONY : CMakeFiles/smallsh.dir/smallsh.c.o.requires
@@ -100,6 +100,6 @@ CMakeFiles/smallsh.dir/clean:
 .PHONY : CMakeFiles/smallsh.dir/clean
 
 CMakeFiles/smallsh.dir/depend:
-	cd /nfs/stak/users/hamiltj2/FA19-CS344/Project3/cmake-build-debug---os1 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /nfs/stak/users/hamiltj2/FA19-CS344/Project3 /nfs/stak/users/hamiltj2/FA19-CS344/Project3 /nfs/stak/users/hamiltj2/FA19-CS344/Project3/cmake-build-debug---os1 /nfs/stak/users/hamiltj2/FA19-CS344/Project3/cmake-build-debug---os1 /nfs/stak/users/hamiltj2/FA19-CS344/Project3/cmake-build-debug---os1/CMakeFiles/smallsh.dir/DependInfo.cmake --color=$(COLOR)
+	cd /nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1 && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /nfs/stak/users/hamiltj2/Program3 /nfs/stak/users/hamiltj2/Program3 /nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1 /nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1 /nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/CMakeFiles/smallsh.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/smallsh.dir/depend
 

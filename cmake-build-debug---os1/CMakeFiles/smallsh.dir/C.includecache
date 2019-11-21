@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/nfs/stak/users/hamiltj2/FA19-CS344/Program3/smallsh.c
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+sys/types.h
+-
+unistd.h
+-
+

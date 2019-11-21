@@ -1,4 +1,4 @@
-/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/bin/make -DCMAKE_C_COMPILER=/bin/gcc -DCMAKE_CXX_COMPILER=/bin/g++ -G "CodeBlocks - Unix Makefiles" /nfs/stak/users/hamiltj2/FA19-CS344/Project3
+/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/bin/make -DCMAKE_C_COMPILER=/bin/gcc -DCMAKE_CXX_COMPILER=/bin/g++ -G "CodeBlocks - Unix Makefiles" /nfs/stak/users/hamiltj2/Program3
 -- The C compiler identification is GNU 4.8.5
 -- Check for working C compiler: /bin/gcc
 -- Check for working C compiler: /bin/gcc -- works
@@ -12,4 +12,4 @@ CMake Warning:
     CMAKE_CXX_COMPILER
 
 
--- Build files have been written to: /nfs/stak/users/hamiltj2/FA19-CS344/Project3/cmake-build-debug---os1
+-- Build files have been written to: /nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1

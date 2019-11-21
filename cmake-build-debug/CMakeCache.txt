@@ -203,12 +203,6 @@ smallsh_BINARY_DIR:STATIC=/Users/jordanhamilton/Documents/School/CS 344/Program 
 //Value Computed by CMake
 smallsh_SOURCE_DIR:STATIC=/Users/jordanhamilton/Documents/School/CS 344/Program 3
 
-//Value Computed by CMake
-untitled_BINARY_DIR:STATIC=/Users/jordanhamilton/Documents/School/CS 344/Program 3/cmake-build-debug
-
-//Value Computed by CMake
-untitled_SOURCE_DIR:STATIC=/Users/jordanhamilton/Documents/School/CS 344/Program 3
-
 
 ########################
 # INTERNAL cache entries
