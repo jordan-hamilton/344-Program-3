@@ -4,18 +4,26 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+void changeDirCmd(char**);
+void execCmd(char**, int);
+void exitShellCmd();
+void printStatusCmd();
+
 int main(int argc, char* argv[]) {
-  int shellPid = getpid();
-  int forkCount = 0, charsEntered = -5;
+  pid_t shellPid = getpid();
+  pid_t spawnPid = -5;
+  int charsEntered = -5;
   char bg = '&';
   char comment = '#';
-  char* exit = "exit";
+  char* cdCmd = "cd";
+  char* exitCmd = "exit";
+  char* statusCmd = "status";
   char* command = NULL;
-  size_t commandSize = 0, commandMax = 2049;
+  size_t commandSize = 0, argCount = 0, commandMax = 2049, argMax = 512, forkCount = 0;
 
   command = malloc(commandMax * sizeof(char));
   if (command == NULL)
-    perror("Allocating memory for a command string failed");
+    perror("Allocating memory for a command string failed.");
 
   do {
     printf(": ");
@@ -25,15 +33,53 @@ int main(int argc, char* argv[]) {
 
     if (command[0] == comment || strlen(command) == 0) {
       printf("Comment or empty string\n");
-    } else if (command[strlen(command) - 1] == bg)
+      fflush(stdout);
+    } else if (command[strlen(command) - 1] == bg) {
       printf("Background\n");
-    else {
+      fflush(stdout);
+      execCmd(&command, 0);
+    } else {
+
       printf("Foreground\n");
+      fflush(stdout);
+      if (strncmp(command, cdCmd, strlen(cdCmd)) == 0) {
+        changeDirCmd(&command);
+      } else if (strncmp(command, statusCmd, strlen(statusCmd)) == 0) {
+        printStatusCmd();
+      } else if (strncmp(command, exitCmd, strlen(exitCmd)) == 0) {
+        exitShellCmd();
+      } else {
+        printf("Time to do a thing\n");
+        execCmd(&command, 1);
+      }
+
     }
-    fflush(stdout);
-  } while (strcmp(command, exit) != 0);
+  } while (strcmp(command, exitCmd) != 0);
 
   free(command);
   command = NULL;
   return(0);
+}
+
+void changeDirCmd(char** command) {
+  if(strcmp(*command, "cd") == 0) {
+    chdir(getenv("HOME"));
+  } else {
+    chdir(*command + 3);
+  }
+}
+
+void execCmd(char** command, int foreground) {
+  printf("Doing a thing.\n");
+  fflush(stdout);
+}
+
+void exitShellCmd() {
+  printf("Exiting the shell.\n");
+  fflush(stdout);
+}
+
+void printStatusCmd() {
+  printf("Printing the status.\n");
+  fflush(stdout);
 }

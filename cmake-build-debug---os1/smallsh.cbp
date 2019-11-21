@@ -8,28 +8,28 @@
       <Option virtualFolders="CMake Files\;" />
       <Build>
       <Target title="all">
-         <Option working_dir="/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1" />
+         <Option working_dir="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 all" />
-            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 all" />
+            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="rebuild_cache">
-         <Option working_dir="/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1" />
+         <Option working_dir="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1" />
          <Option type="4" />
          <MakeCommands>
-            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 rebuild_cache" />
-            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 rebuild_cache" />
+            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="smallsh">
-         <Option output="/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/smallsh" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1" />
+         <Option output="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/smallsh" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1" />
          <Option object_output="./" />
          <Option type="1" />
          <Option compiler="gcc" />
@@ -39,15 +39,15 @@
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 smallsh" />
-            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 smallsh" />
+            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       <Target title="smallsh/fast">
-         <Option output="/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/smallsh" prefix_auto="0" extension_auto="0" />
-         <Option working_dir="/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1" />
+         <Option output="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/smallsh" prefix_auto="0" extension_auto="0" />
+         <Option working_dir="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1" />
          <Option object_output="./" />
          <Option type="1" />
          <Option compiler="gcc" />
@@ -57,16 +57,16 @@
             <Add directory="/usr/local/include" />
          </Compiler>
          <MakeCommands>
-            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 smallsh/fast" />
-            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
-            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
-            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <Build command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 smallsh/fast" />
+            <CompileFile command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 &quot;$file&quot;" />
+            <Clean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
+            <DistClean command="/bin/make -f &quot;/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/Makefile&quot;  VERBOSE=1 clean" />
          </MakeCommands>
       </Target>
       </Build>
-      <Unit filename="/nfs/stak/users/hamiltj2/Program3/smallsh.c">
+      <Unit filename="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/smallsh.c">
       </Unit>
-      <Unit filename="/nfs/stak/users/hamiltj2/Program3/CMakeLists.txt">
+      <Unit filename="/nfs/stak/users/hamiltj2/FA19-CS344/Program3/CMakeLists.txt">
           <Option virtualFolder="CMake Files\" />
       </Unit>
    </Project>

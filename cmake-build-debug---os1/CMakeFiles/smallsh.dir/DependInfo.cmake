@@ -4,7 +4,7 @@ SET(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 SET(CMAKE_DEPENDS_CHECK_C
-  "/nfs/stak/users/hamiltj2/Program3/smallsh.c" "/nfs/stak/users/hamiltj2/Program3/cmake-build-debug---os1/CMakeFiles/smallsh.dir/smallsh.c.o"
+  "/nfs/stak/users/hamiltj2/FA19-CS344/Program3/smallsh.c" "/nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1/CMakeFiles/smallsh.dir/smallsh.c.o"
   )
 SET(CMAKE_C_COMPILER_ID "GNU")
 
