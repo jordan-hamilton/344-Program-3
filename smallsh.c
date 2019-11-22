@@ -8,7 +8,8 @@
 #include <unistd.h>
 
 void changeDirCmd(char**);
-pid_t execCmd(char**, const pid_t*, int);
+void parseCmd(char**, char*[], char[], char[], const pid_t*);
+pid_t executeCmd(char*[], char[], char[], const pid_t*, int);
 void exitShellCmd(char**, const pid_t*);
 void printStatusCmd();
 
@@ -20,6 +21,8 @@ int main(int argc, char* argv[]) {
   char* cdCmd = "cd";
   char* exitCmd = "exit";
   char* statusCmd = "status";
+  char stdInPath[256] = "", stdOutPath[256]= "";
+  char* args[512];
   char* command = NULL;
   size_t commandSize = 0, commandMax = 2049;
 
@@ -37,10 +40,9 @@ int main(int argc, char* argv[]) {
     if (command[0] != comment && strlen(command) != 0) {
 
       if (command[strlen(command) - 1] == bg) {
-        printf("Background\n");
-        fflush(stdout);
         command[strlen(command) - 1] = '\0';
-        execCmd(&command, &shellPid, 0);
+        parseCmd(&command, args, stdInPath, stdOutPath, &shellPid);
+        executeCmd(args, stdInPath, stdOutPath, &shellPid, 0);
       } else {
 
         if (strncmp(command, cdCmd, strlen(cdCmd)) == 0) {
@@ -50,7 +52,8 @@ int main(int argc, char* argv[]) {
         } else if (strncmp(command, exitCmd, strlen(exitCmd)) == 0) {
           exitShellCmd(&command, &shellPid);
         } else {
-          execCmd(&command, &shellPid, 1);
+          parseCmd(&command, args, stdInPath, stdOutPath, &shellPid);
+          executeCmd(args, stdInPath, stdOutPath, &shellPid, 1);
         }
 
       }
@@ -71,17 +74,15 @@ void changeDirCmd(char** command) {
   }
 }
 
-pid_t execCmd(char** command, const pid_t* shellPid, int foreground) {
-  char* args[512];
-  char stdInPath[256] = "";
-  char stdOutPath[256] = "";
-  pid_t spawnPid = -5, actualPid = -5;
-  int exitMethod = -5;
+void parseCmd(char** command, char* args[], char stdInPath[], char stdOutPath[], const pid_t* shellPid) {
   char* shellVar = "$$";
   char* inOperator = "<";
   char* outOperator = ">";
   char* delimiter = " ";
   size_t argsMax = 512;
+
+  strcpy(stdInPath, "");
+  strcpy(stdOutPath, "");
 
   for (size_t i = 0; i < argsMax; i++) {
     args[i] = NULL;
@@ -89,6 +90,7 @@ pid_t execCmd(char** command, const pid_t* shellPid, int foreground) {
 
   char* buffer = strtok(*command, delimiter);
   size_t i = 0;
+
   while (buffer != NULL) {
     if (strcmp(buffer, inOperator) == 0) {
       buffer = strtok(NULL, delimiter);
@@ -103,14 +105,14 @@ pid_t execCmd(char** command, const pid_t* shellPid, int foreground) {
     }
 
     buffer = strtok(NULL, delimiter);
-
   }
 
-  printf("Infile: %s\n", stdInPath);
-  printf("Outfile: %s\n", stdOutPath);
-  for (size_t q = 0; q < i; q++) {
-    printf("Args[%zu]: %s\n", q, args[q]);
-  }
+}
+
+pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const pid_t* shellPid, int foreground) {
+  pid_t spawnPid = -5, actualPid = -5;
+  int exitMethod = -5;
+  int childStdIn = -5, childStdOut = -5, result = -5;
 
   spawnPid = fork();
   switch (spawnPid) {
@@ -118,21 +120,42 @@ pid_t execCmd(char** command, const pid_t* shellPid, int foreground) {
       perror("Could not create a process.");
       return(-1);
     case 0:
-      if (strlen(stdInPath) != 0) {
-        childstdIn = open(stdInPath, O_RDONLY);
+      if (strlen(stdInPath) != 0 || !foreground) {
+        if (strlen(stdInPath) != 0)
+          childStdIn = open(stdInPath, O_RDONLY);
+        else
+          childStdIn = open("/dev/null", O_RDONLY);
 
+        if (childStdIn == -1)
+          perror("Couldn't open the file specified for standard input");
+
+        result = dup2(childStdIn, 0);
+        if(result == -1)
+          perror("Couldn't redirect standard input");
       }
+
+      if (strlen(stdOutPath) != 0 || !foreground) {
+        if (strlen(stdOutPath) != 0)
+          childStdOut = open(stdOutPath, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        else
+          childStdOut = open("/dev/null", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+
+        if (childStdOut == -1)
+          perror("Couldn't open the file specified for standard output");
+
+        result = dup2(childStdOut, 1);
+        if(result == -1)
+          perror("Couldn't redirect standard output");
+      }
+
       execvp(args[0], args);
       return(0);
     default:
       if(foreground) {
         actualPid = waitpid(spawnPid, &exitMethod, 0);
       }
-      printf("In the parent - Child is %d\n", spawnPid);
-      fflush(stdout);
       return(spawnPid);
   }
-
 }
 
 void exitShellCmd(char** command, const pid_t* shellPid) {
