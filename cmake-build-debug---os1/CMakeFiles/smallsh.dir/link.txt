@@ -1,1 +1,1 @@
-/bin/gcc  -g -Wall -pedantic    CMakeFiles/smallsh.dir/smallsh.c.o  -o smallsh -rdynamic 
+/bin/gcc  -g -std=gnu99 -Wall -pedantic    CMakeFiles/smallsh.dir/smallsh.c.o  -o smallsh -rdynamic 
