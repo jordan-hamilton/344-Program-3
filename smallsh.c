@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void changeDirCmd(char**);
+void changeDirCmd(char*[], const size_t*);
 void parseCmd(char**, char*[], char[], char[], size_t*, const size_t*, const size_t*, const pid_t*);
 pid_t executeCmd(char*[], char[], char[], const size_t*, pid_t*, int*, int);
 void exitShellCmd(char**, pid_t*);
@@ -42,7 +42,8 @@ int main(int argc, char* argv[]) {
       } else {
 
         if (strncmp(command, cdCmd, strlen(cdCmd)) == 0) {
-          changeDirCmd(&command);
+          parseCmd(&command, args, stdInPath, stdOutPath, &argsCount, &argsMax, &commandMax, &shellPid);
+          changeDirCmd(args, &argsCount);
         } else if (strncmp(command, statusCmd, strlen(statusCmd)) == 0) {
           printStatusCmd(&exitMethod);
         } else if (strncmp(command, exitCmd, strlen(exitCmd)) == 0) {
@@ -65,12 +66,23 @@ int main(int argc, char* argv[]) {
   return(0);
 }
 
-void changeDirCmd(char** command) {
-  if(strcmp(*command, "cd") == 0) {
-    chdir(getenv("HOME"));
+void changeDirCmd(char* args[], const size_t* argsCount) {
+  int result = -5;
+  if(*argsCount == 1) {
+    result = chdir(getenv("HOME"));
   } else {
-    chdir(*command + 3);
+    result = chdir(args[1]);
   }
+  if (result != 0) {
+    perror("Could not change the working directory to the specified path");
+  }
+
+  /* Free memory that was allocated for the arguments that were passed to the child. */
+  for (size_t i = 0; i < *argsCount; i++) {
+    free(args[i]);
+    args[i] = NULL;
+  }
+
 }
 
 void parseCmd(char** command, char* args[], char stdInPath[], char stdOutPath[], size_t* argsCount, const size_t* argsMax, const size_t* commandMax, const pid_t* shellPid) {
