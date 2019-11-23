@@ -9,13 +9,13 @@
 
 void changeDirCmd(char*[], const size_t*);
 void parseCmd(char**, char*[], char[], char[], size_t*, const size_t*, const size_t*, const pid_t*);
-pid_t executeCmd(char*[], char[], char[], const size_t*, pid_t*, int*, int);
+void executeCmd(char*[], char[], char[], const size_t*, pid_t*, int*, int*, int);
 void exitShellCmd(char**, pid_t*);
 void printStatusCmd(const int*);
 
 int main(int argc, char* argv[]) {
   pid_t shellPid = getpid();
-  int exitReceived = 0, exitMethod = -5, charsEntered = -5;
+  int foregroundOnly = 0, exitReceived = 0, exitMethod = -5, charsEntered = -5;
   char bg = '&';
   char comment = '#';
   char* cdCmd = "cd";
@@ -26,6 +26,11 @@ int main(int argc, char* argv[]) {
   char* command = NULL;
   size_t argsCount = 0, argsMax = 512, commandSize = 0, commandMax = 2049;
 
+  /* Create a signal handler to prevent SIGINT and one to catch SIGTSTP so we can toggle whether or not the user
+   * can execute a process in the background */
+  struct sigaction sigint = {0}, sigtstp = {0};
+
+
   do {
     argsCount = 0;
     printf(": ");
@@ -33,25 +38,34 @@ int main(int argc, char* argv[]) {
     charsEntered = getline(&command, &commandSize, stdin);
     command[charsEntered - 1] = '\0';
 
+    /* Begin to process the string the user entered only if it didn't start with a # or have a zero-length string */
     if (command[0] != comment && strlen(command) != 0) {
 
       if (command[strlen(command) - 1] == bg) {
+        /* Parse the command into an array and send the array to executeCmd(), with a special flag indicating that it
+         * should be a background process since the last character in the command was an ampersand. */
         command[strlen(command) - 1] = '\0';
         parseCmd(&command, args, stdInPath, stdOutPath, &argsCount, &argsMax, &commandMax, &shellPid);
-        executeCmd(args, stdInPath, stdOutPath, &argsCount, &shellPid, &exitMethod, 0);
+        executeCmd(args, stdInPath, stdOutPath, &argsCount, &shellPid, &exitMethod, &foregroundOnly, 0);
       } else {
 
         if (strncmp(command, cdCmd, strlen(cdCmd)) == 0) {
+          /* Parse the command into an array (in case the new directory uses $$), then pass the arguments into our
+           * homemade cd function */
           parseCmd(&command, args, stdInPath, stdOutPath, &argsCount, &argsMax, &commandMax, &shellPid);
           changeDirCmd(args, &argsCount);
         } else if (strncmp(command, statusCmd, strlen(statusCmd)) == 0) {
+          /* Print the exit method and associated signal or exit code of the most recently completed command. */
           printStatusCmd(&exitMethod);
         } else if (strncmp(command, exitCmd, strlen(exitCmd)) == 0) {
+          /* Set a flag to break out of the do-while loop and print a command to indicate that the shell is being
+           * terminated. */
           exitReceived = 1;
           exitShellCmd(&command, &shellPid);
         } else {
+          /* Parse the user's command and call executeCmd() with a flag to indicate that this is a foreground process. */
           parseCmd(&command, args, stdInPath, stdOutPath, &argsCount, &argsMax, &commandMax, &shellPid);
-          executeCmd(args, stdInPath, stdOutPath, &argsCount, &shellPid, &exitMethod, 1);
+          executeCmd(args, stdInPath, stdOutPath, &argsCount, &shellPid, &exitMethod, &foregroundOnly, 1);
         }
 
       }
@@ -132,7 +146,7 @@ void parseCmd(char** command, char* args[], char stdInPath[], char stdOutPath[],
 
 }
 
-pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const size_t* argsCount, pid_t* shellPid, int* exitMethod, int foreground) {
+void executeCmd(char* args[], char stdInPath[], char stdOutPath[], const size_t* argsCount, pid_t* shellPid, int* exitMethod, int* foregroundOnly, int foreground) {
   pid_t spawnPid = -5, actualPid = -5;
   int childStdIn = -5, childStdOut = -5, result = -5;
 
@@ -140,7 +154,7 @@ pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const size_t
   switch (spawnPid) {
     case -1:
       perror("Could not create a process.");
-      return(-1);
+      break;
     case 0:
       if (strlen(stdInPath) != 0 || !foreground) {
         if (strlen(stdInPath) != 0)
@@ -186,9 +200,10 @@ pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const size_t
         exit(1);
       }
 
-      return(0);
     default:
-      if (foreground) {
+      /* Check if the flags to send foreground command  were set when executeCmd() was called, then call waitpid with
+       * the correct flags, sending the process to the background and printing the ID if a background was requested. */
+      if (foreground || *foregroundOnly) {
         actualPid = waitpid(spawnPid, exitMethod, 0);
       } else {
         actualPid = waitpid(spawnPid, exitMethod, WNOHANG);
@@ -196,8 +211,9 @@ pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const size_t
         fflush(stdout);
       }
 
-      /* Check for any background child process that may have terminated and output a message letting the user know
-       * the process ID that completed, along with the exit code or terminating signal. */
+      /* Check for a return value from waitpid that's greater than 0 to indicate that any background child process
+       * may have terminated, and output a message letting the user know the process ID that completed, along with
+       * the exit code or terminating signal. */
       while ((actualPid = waitpid(-1, exitMethod, WNOHANG)) > 0) {
         printf("[%d]: ", actualPid);
         fflush(stdout);
@@ -210,7 +226,6 @@ pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const size_t
         args[i] = NULL;
       }
 
-      return(spawnPid);
   }
 }
 
