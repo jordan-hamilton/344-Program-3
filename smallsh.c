@@ -8,14 +8,14 @@
 #include <unistd.h>
 
 void changeDirCmd(char**);
-void parseCmd(char**, char*[], char[], char[], const pid_t*);
-pid_t executeCmd(char*[], char[], char[], const pid_t*, int);
-void exitShellCmd(char**, const pid_t*);
-void printStatusCmd();
+void parseCmd(char**, char*[], char[], char[], size_t*, const size_t*, const size_t*, const pid_t*);
+pid_t executeCmd(char*[], char[], char[], const size_t*, pid_t*, int*, int);
+void exitShellCmd(char**, pid_t*);
+void printStatusCmd(const int*);
 
 int main(int argc, char* argv[]) {
   pid_t shellPid = getpid();
-  int charsEntered = -5;
+  int exitReceived = 0, exitMethod = -5, charsEntered = -5;
   char bg = '&';
   char comment = '#';
   char* cdCmd = "cd";
@@ -24,14 +24,10 @@ int main(int argc, char* argv[]) {
   char stdInPath[256] = "", stdOutPath[256]= "";
   char* args[512];
   char* command = NULL;
-  size_t commandSize = 0, commandMax = 2049;
-
-  command = malloc(commandMax * sizeof(char));
-  if (command == NULL)
-    perror("Allocating memory for a command string failed.");
+  size_t argsCount = 0, argsMax = 512, commandSize = 0, commandMax = 2049;
 
   do {
-    memset(command, '\0', commandMax);
+    argsCount = 0;
     printf(": ");
     fflush(stdout);
     charsEntered = getline(&command, &commandSize, stdin);
@@ -41,28 +37,31 @@ int main(int argc, char* argv[]) {
 
       if (command[strlen(command) - 1] == bg) {
         command[strlen(command) - 1] = '\0';
-        parseCmd(&command, args, stdInPath, stdOutPath, &shellPid);
-        executeCmd(args, stdInPath, stdOutPath, &shellPid, 0);
+        parseCmd(&command, args, stdInPath, stdOutPath, &argsCount, &argsMax, &commandMax, &shellPid);
+        executeCmd(args, stdInPath, stdOutPath, &argsCount, &shellPid, &exitMethod, 0);
       } else {
 
         if (strncmp(command, cdCmd, strlen(cdCmd)) == 0) {
           changeDirCmd(&command);
         } else if (strncmp(command, statusCmd, strlen(statusCmd)) == 0) {
-          printStatusCmd();
+          printStatusCmd(&exitMethod);
         } else if (strncmp(command, exitCmd, strlen(exitCmd)) == 0) {
+          exitReceived = 1;
           exitShellCmd(&command, &shellPid);
         } else {
-          parseCmd(&command, args, stdInPath, stdOutPath, &shellPid);
-          executeCmd(args, stdInPath, stdOutPath, &shellPid, 1);
+          parseCmd(&command, args, stdInPath, stdOutPath, &argsCount, &argsMax, &commandMax, &shellPid);
+          executeCmd(args, stdInPath, stdOutPath, &argsCount, &shellPid, &exitMethod, 1);
         }
 
       }
 
     }
-  } while (strcmp(command, exitCmd) != 0);
 
-  free(command);
-  command = NULL;
+    free(command);
+    command = NULL;
+  } while (!exitReceived);
+
+
   return(0);
 }
 
@@ -74,22 +73,21 @@ void changeDirCmd(char** command) {
   }
 }
 
-void parseCmd(char** command, char* args[], char stdInPath[], char stdOutPath[], const pid_t* shellPid) {
-  char* shellVar = "$$";
+void parseCmd(char** command, char* args[], char stdInPath[], char stdOutPath[], size_t* argsCount, const size_t* argsMax, const size_t* commandMax, const pid_t* shellPid) {
+  char* pidExpansion = "$$";
   char* inOperator = "<";
   char* outOperator = ">";
   char* delimiter = " ";
-  size_t argsMax = 512;
+  char* pidVarLocation;
 
   strcpy(stdInPath, "");
   strcpy(stdOutPath, "");
 
-  for (size_t i = 0; i < argsMax; i++) {
+  for (size_t i = 0; i < *argsMax; i++) {
     args[i] = NULL;
   }
 
   char* buffer = strtok(*command, delimiter);
-  size_t i = 0;
 
   while (buffer != NULL) {
     if (strcmp(buffer, inOperator) == 0) {
@@ -99,9 +97,22 @@ void parseCmd(char** command, char* args[], char stdInPath[], char stdOutPath[],
       buffer = strtok(NULL, delimiter);
       strcpy(stdOutPath, buffer);
     } else {
+      args[*argsCount] = malloc(*commandMax * sizeof(char));
+      if (args[*argsCount] == NULL)
+        perror("Allocating memory for a command argument failed.");
+      memset(args[*argsCount], '\0', *commandMax);
+      pidVarLocation = strstr(buffer, pidExpansion);
+      if (pidVarLocation != NULL) {
+        char temp[2049] = "";
+        strncpy(args[*argsCount], buffer, (int) (pidVarLocation - buffer));
+        sprintf(temp, "%d", *shellPid);
+        strcat(args[*argsCount], temp);
+        strcat(args[*argsCount], (pidVarLocation + 2));
+      } else {
+        strcpy(args[*argsCount], buffer);
+      }
 
-      args[i] = strdup(buffer);
-      i++;
+      *argsCount += 1;
     }
 
     buffer = strtok(NULL, delimiter);
@@ -109,9 +120,8 @@ void parseCmd(char** command, char* args[], char stdInPath[], char stdOutPath[],
 
 }
 
-pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const pid_t* shellPid, int foreground) {
+pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const size_t* argsCount, pid_t* shellPid, int* exitMethod, int foreground) {
   pid_t spawnPid = -5, actualPid = -5;
-  int exitMethod = -5;
   int childStdIn = -5, childStdOut = -5, result = -5;
 
   spawnPid = fork();
@@ -126,12 +136,17 @@ pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const pid_t*
         else
           childStdIn = open("/dev/null", O_RDONLY);
 
-        if (childStdIn == -1)
-          perror("Couldn't open the file specified for standard input");
+        if (childStdIn == -1) {
+          perror("Couldn't access the specified location for standard input");
+          exit(1);
+        }
 
         result = dup2(childStdIn, 0);
-        if(result == -1)
+        if (result == -1) {
           perror("Couldn't redirect standard input");
+          exit(1);
+        }
+
       }
 
       if (strlen(stdOutPath) != 0 || !foreground) {
@@ -140,32 +155,66 @@ pid_t executeCmd(char* args[], char stdInPath[], char stdOutPath[], const pid_t*
         else
           childStdOut = open("/dev/null", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-        if (childStdOut == -1)
-          perror("Couldn't open the file specified for standard output");
+        if (childStdOut == -1) {
+          perror("Couldn't access the specified location for standard output");
+          exit(1);
+        }
 
         result = dup2(childStdOut, 1);
-        if(result == -1)
+        if (result == -1) {
           perror("Couldn't redirect standard output");
+          exit(1);
+        }
       }
 
-      execvp(args[0], args);
+      result = execvp(args[0], args);
+      if (result == -1)  {
+        printf("Command not found: %s\n", args[0]);
+        fflush(stdout);
+        exit(1);
+      }
+
       return(0);
     default:
-      if(foreground) {
-        actualPid = waitpid(spawnPid, &exitMethod, 0);
+      if (foreground) {
+        actualPid = waitpid(spawnPid, exitMethod, 0);
+      } else {
+        actualPid = waitpid(spawnPid, exitMethod, WNOHANG);
+        printf("Process ID: [%d]\n", spawnPid);
+        fflush(stdout);
       }
+
+      /* Check for any background child process that may have terminated and output a message letting the user know
+       * the process ID that completed, along with the exit code or terminating signal. */
+      while ((actualPid = waitpid(-1, exitMethod, WNOHANG)) > 0) {
+        printf("[%d]: ", actualPid);
+        fflush(stdout);
+        printStatusCmd(exitMethod);
+      }
+
+      /* Free memory that was allocated for the arguments that were passed to the child. */
+      for (size_t i = 0; i < *argsCount; i++) {
+        free(args[i]);
+        args[i] = NULL;
+      }
+
       return(spawnPid);
   }
 }
 
-void exitShellCmd(char** command, const pid_t* shellPid) {
-  free(command);
-  command = NULL;
-  printf("Exiting the shell.\n");
+void exitShellCmd(char** command, pid_t* shellPid) {
+  printf("\n[Exiting smallsh]\n");
   fflush(stdout);
 }
 
-void printStatusCmd() {
-  printf("Printing the status.\n");
+void printStatusCmd(const int* exitMethod) {
+  /* Check if the exit method was via a signal or normal termination stored from the most recent call to waitpid().
+   * Print the appropriate status (either the signal or exit code) based on whether it was a signal or normal
+   * termination of a process.*/
+  if (WIFEXITED(*exitMethod)) {
+    printf("Process terminated with exit code %d.\n", WEXITSTATUS(*exitMethod));
+  } else if (WIFSIGNALED(*exitMethod)){
+    printf("Process terminated by signal %d.\n", WTERMSIG(*exitMethod));
+  }
   fflush(stdout);
 }
