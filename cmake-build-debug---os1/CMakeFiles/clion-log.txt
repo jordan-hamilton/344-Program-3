@@ -1,4 +1,0 @@
-/usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/bin/make -DCMAKE_C_COMPILER=/bin/gcc -DCMAKE_CXX_COMPILER=/bin/g++ -G "CodeBlocks - Unix Makefiles" /nfs/stak/users/hamiltj2/FA19-CS344/Program3
--- Configuring done
--- Generating done
--- Build files have been written to: /nfs/stak/users/hamiltj2/FA19-CS344/Program3/cmake-build-debug---os1

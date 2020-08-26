@@ -1,1 +1,0 @@
-/bin/gcc  -g    CMakeFiles/smallsh.dir/smallsh.c.o  -o smallsh -rdynamic 
